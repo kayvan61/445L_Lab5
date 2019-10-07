@@ -1,0 +1,10 @@
+--cpu=Cortex-M4 --fpu=SoftVFP
+".\startup.o"
+".\periodictimer0aints.o"
+".\pll.o"
+".\timer0a.o"
+".\dac.o"
+".\sound.o"
+--ro-base 0x00000000 --entry 0x00000000 --rw-base 0x20000000 --entry Reset_Handler --first __Vectors --strict --summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
+--info sizes --info totals --info unused --info veneers
+--list ".\PeriodicTimer0AInts.map" -o .\PeriodicTimer0AInts.axf
