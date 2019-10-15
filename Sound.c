@@ -3,74 +3,61 @@
 #include "DAC.h"
 #include "../inc/tm4c123gh6pm.h"
 
-#define C_2 19111   // 65.406 Hz
-#define DF_1 18039   // 69.296 Hz
-#define D_1 17026   // 73.416 Hz
-#define EF_1 16071   // 77.782 Hz
-#define E_1 15169   // 82.407 Hz
-#define F_1 14317   // 87.307 Hz
-#define GF_1 13514   // 92.499 Hz
-#define G_1 12755   // 97.999 Hz
-#define AF_1 12039   // 103.826 Hz
-#define A_1 11364   // 110.000 Hz
-#define BF_1 10726   // 116.541 Hz
-#define B_1 10124   // 123.471 Hz
+#define C2 9556   // 130.813 Hz
+#define DF2 9019   // 138.591 Hz
+#define D2 8513   // 146.832 Hz
+#define EF2 8035   // 155.563 Hz
+#define E2 7584   // 164.814 Hz
+#define F2 7159   // 174.614 Hz
+#define GF2 6757   // 184.997 Hz
+#define G2 6378   // 195.998 Hz
+#define AF2 6020   // 207.652 Hz
+#define A2 5682   // 220.000 Hz
+#define BF2 5363   // 233.082 Hz
+#define B2 5062   // 246.942 Hz
 
-#define C_1 9556   // 130.813 Hz
-#define DF0 9019   // 138.591 Hz
-#define D0 8513   // 146.832 Hz
-#define EF0 8035   // 155.563 Hz
-#define E0 7584   // 164.814 Hz
-#define F0 7159   // 174.614 Hz
-#define GF0 6757   // 184.997 Hz
-#define G0 6378   // 195.998 Hz
-#define AF0 6020   // 207.652 Hz
-#define A0 5682   // 220.000 Hz
-#define BF0 5363   // 233.082 Hz
-#define B0 5062   // 246.942 Hz
+#define C3 4778   // 261.626 Hz
+#define DF3 4510   // 277.183 Hz
+#define D3 4257   // 293.665 Hz
+#define EF3 4018   // 311.127 Hz
+#define E3 3792   // 329.628 Hz
+#define F3 3579   // 349.228 Hz
+#define GF3 3378   // 369.994 Hz
+#define G3 3189   // 391.995 Hz
+#define AF3 3010   // 415.305 Hz
+#define A3 2841   // 440.000 Hz
+#define BF3 2681   // 466.164 Hz
+#define B3 2531   // 493.883 Hz
 
-#define C0 4778   // 261.626 Hz
-#define DF 4510   // 277.183 Hz
-#define D 4257   // 293.665 Hz
-#define EF 4018   // 311.127 Hz
-#define E 3792   // 329.628 Hz
-#define F 3579   // 349.228 Hz
-#define GF 3378   // 369.994 Hz
-#define G 3189   // 391.995 Hz
-#define AF 3010   // 415.305 Hz
-#define A 2841   // 440.000 Hz
-#define BF 2681   // 466.164 Hz
-#define B 2531   // 493.883 Hz
+#define C4 2389   // 523.251 Hz
+#define DF4 2255   // 554.365 Hz
+#define D4 2128   // 587.330 Hz
+#define EF4 2009   // 622.254 Hz
+#define E4 1896   // 659.255 Hz
+#define F4 1790   // 698.456 Hz
+#define GF4 1689   // 739.989 Hz
+#define G4 1594   // 783.991 Hz
+#define AF4 1505   // 830.609 Hz
+#define A4 1420   // 880.000 Hz
+#define BF4 1341   // 932.328 Hz
+#define B4 1265   // 987.767 Hz
 
-#define C 2389   // 523.251 Hz
-#define DF1 2255   // 554.365 Hz
-#define D1 2128   // 587.330 Hz
-#define EF1 2009   // 622.254 Hz
-#define E1 1896   // 659.255 Hz
-#define F1 1790   // 698.456 Hz
-#define GF1 1689   // 739.989 Hz
-#define G1 1594   // 783.991 Hz
-#define AF1 1505   // 830.609 Hz
-#define A1 1420   // 880.000 Hz
-#define BF1 1341   // 932.328 Hz
-#define B1 1265   // 987.767 Hz
+#define C5 1194   // 1046.502 Hz
+#define DF5 1127   // 1108.731 Hz
+#define D5 1064   // 1174.659 Hz
+#define EF5 1004   // 1244.508 Hz
+#define E5 948   // 1318.510 Hz
+#define F5 895   // 1396.913 Hz
+#define GF5 845   // 1479.978 Hz
+#define G5 797   // 1567.982 Hz
+#define AF5 752   // 1661.219 Hz
+#define A5 710   // 1760.000 Hz
+#define BF5 670   // 1864.655 Hz
+#define B5 633   // 1975.533 Hz
 
-#define C1 1194   // 1046.502 Hz
-#define DF2 1127   // 1108.731 Hz
-#define D2 1064   // 1174.659 Hz
-#define EF2 1004   // 1244.508 Hz
-#define E2 948   // 1318.510 Hz
-#define F2 895   // 1396.913 Hz
-#define GF2 845   // 1479.978 Hz
-#define G2 797   // 1567.982 Hz
-#define AF2 752   // 1661.219 Hz
-#define A2 710   // 1760.000 Hz
-#define BF2 670   // 1864.655 Hz
-#define B2 633   // 1975.533 Hz
+#define C6 597   // 2093.005 Hz
 
-#define C2 597   // 2093.005 Hz
-
-#define BPM 100
+#define BPM 250
 #define NUM_NOTES 300
 
 typedef struct {
@@ -89,121 +76,99 @@ static const Note* currentNote;
 //https://pianoletternotes.blogspot.com/2017/10/dragonborn-skyrim-theme.html
 
 static const Note songLeft[NUM_NOTES] = {
-	{1, B1, 2}, {1, B1, 2}, {1, B1, 2}, {1, B1, 2}, {1, B1, 2}, {1, B1, 2},
-	{1, B1, 2}, {1, B1, 2}, {1, B1, 2}, {1, B1, 2}, {1, B1, 2}, 
-	{1, 0, 1}, {1, 0, 1}, 				//Cd
-	{1, B1, 2}, {1, B1, 2}, {1, B1, 2}, {1, B1, 2}, {1, B1, 2}, {1, B1, 2},
-	{1, B1, 2}, {1, B1, 2}, {1, B1, 2}, {1, B1, 2}, {1, B1, 2},
-	{1, 0, 1}, {1, 0, 1}, 				//Cd
-	{1, B1, 2}, {1, B1, 2}, {1, B1, 2}, {1, B1, 2}, {1, B1, 2}, {1, B1, 2},
-	{1, B1, 2}, {1, B1, 2}, {1, B1, 2}, {1, B1, 2}, {1, B1, 2},
-	{1, 0, 1}, {1, 0, 1}, 				//Cd
-	{1, B1, 2}, {1, B1, 2}, {1, B1, 2}, {1, B1, 2}, {1, B1, 2}, 
-	{1, B1, 2}, {1, B1, 2}, {1, B1, 2}, {1, B1, 2}, 
-	{1, 0, 1}, {1, 0, 1}, 				//Cd
-	{1, B1, 2}, 
-	{1, 0, 1}, {1, 0, 1}, 				//Cd
-	{1, B, 12}, {1, E1, 12}, {1, B1, 12}, {1, A1, 12}, {1, B, 12},
-	{1, E1, 12}, {1, B1, 12}, {1, C1, 12},
-	//d---dCd---Cde-d-
-	{1, D1, 4}, {1, D1, 1}, {1, C1, 1}, {1, D1, 4},
-	{1, C1, 1}, {1, D1, 1}, {1, E1, 2}, {1, D1, 2}
-};
-
-static const Note songRight[NUM_NOTES] = {
-	{1, 0, 2}, {1, 0, 2}, {1, 0, 2}, {1, 0, 2}, {1, 0, 2}, {1, 0, 2}, 
-	{1, 0, 2}, {1, 0, 2}, {1, 0, 2}, {1, 0, 2}, {1, 0, 2}, 
-	{1, C1, 1}, {1, D1, 1}, 		//Cd
-	{1, 0, 2}, {1, 0, 2}, {1, 0, 2}, {1, 0, 2}, {1, 0, 2}, {1, 0, 2}, 
-	{1, 0, 2}, {1, 0, 2}, {1, 0, 2}, {1, 0, 2}, {1, 0, 2}, 
-	{1, C1, 1}, {1, D1, 1}, 		//Cd
-	{1, 0, 2}, {1, 0, 2}, {1, 0, 2}, {1, 0, 2}, {1, 0, 2}, {1, 0, 2}, 
-	{1, 0, 2}, {1, 0, 2}, {1, 0, 2}, {1, 0, 2}, {1, 0, 2}, 
-	{1, C1, 1}, {1, D1, 1}, 		//Cd
-	{1, 0, 2}, {1, 0, 2}, {1, 0, 2}, {1, 0, 2}, {1, 0, 2},
-	{1, 0, 2}, {1, 0, 2}, {1, 0, 2}, {1, 0, 2}, 
-	{1, C1, 1}, {1, D1, 1}, 		//Cd
-	{1, 0, 2}, 
-	{1, C1, 1}, {1, D1, 1},			//Cd
-	{1, 0, 12}, {1, 0, 12}, {1, 0, 12}, {1, 0, 12}, {1, 0, 12},
-	{1, 0, 12}, {1, 0, 12}, {1, 0, 12},
-	//d---dCd---Cde-d-
-	{1, 0, 4}, {1, 0, 1}, {1, 0, 1}, {1, 0, 4},
-	{1, 0, 1}, {1, 0, 1}, {1, 0, 2}, {1, 0, 2}
-};
-
-static const Note song_next[NUM_NOTES] = {
-	{1,C,2}, 
-	{1,B1,4}, {1,B1,1}, {1,A1,1}, {1,B1,4},{1,B1,1}, {1,A1,1}, {1,B1,4}, {1,A1,1}, {1,B1,1},
-	{1,C,2}, {1,D2,2}, 
-	{1,A1,2},
+	{1, B4, 2}, {1, B4, 2}, {1, B4, 2}, {1, B4, 2}, {1, B4, 2}, {1, B4, 2},
+	{1, B4, 2}, {1, B4, 2}, {1, B4, 2}, {1, B4, 2}, {1, B4, 2}, 
+	{1, DF5, 1}, {1, D5, 1}, 				//Cd
+	{1, B4, 2}, {1, B4, 2}, {1, B4, 2}, {1, B4, 2}, {1, B4, 2}, {1, B4, 2},
+	{1, B4, 2}, {1, B4, 2}, {1, B4, 2}, {1, B4, 2}, {1, B4, 2},
+	{1, DF5, 1}, {1, D5, 1}, 				//Cd
+	{1, B4, 2}, {1, B4, 2}, {1, B4, 2}, {1, B4, 2}, {1, B4, 2}, {1, B4, 2},
+	{1, B4, 2}, {1, B4, 2}, {1, B4, 2}, {1, B4, 2}, {1, B4, 2},
+	{1, DF5, 1}, {1, D5, 1}, 				//Cd
+	{1, B4, 2}, {1, B4, 2}, {1, B4, 2}, {1, B4, 2}, {1, B4, 2}, 
+	{1, B4, 2}, {1, B4, 2}, {1, B4, 2}, {1, B4, 2}, 
+	{1, DF5, 1}, {1, D5, 1}, 				//Cd
+	{1, B4, 2}, 
+	{1, DF5, 1}, {1, D5, 1}, 				//Cd
+	{1, B3, 12}, {1, E4, 12}, {1, B4, 12}, {1, A4, 12}, {1, B3, 12},
+	{1, E4, 12}, {1, B4, 12}, {1, C5, 12},
+	{1, D5, 4}, 
+	{1, D5, 1}, {1, DF5, 1}, {1, D5, 4},
+	
+	{1, C5, 1}, {1, D5, 1}, {1, E5, 2}, {1, D5, 2},
+	{1,DF5,2}, 
+	{1,B4,4}, {1,B4,1}, {1,A4,1}, {1,B4,4},{1,B4,1}, {1,A4,1}, {1,B4,4}, {1,A4,1}, {1,B4,1},
+	{1,DF5,2}, {1,D5,2}, 
+	{1,A4,2},
 	//
-	{1,B1,6},
-	{1,D2,2}, {1,D2,2}, {1,D2,2}, {1,D2,4}, {1,C,1}, {1,D2,1}, {1,E2,2}, {1,D2,2}, {1,C2,2}, 
-  {1,B1,4},
+	{1,B4,6},
+	{1,D5,2}, {1,D5,2}, {1,D5,2}, {1,D5,4}, {1,DF5,1}, {1,D5,1}, {1,E5,2}, {1,D5,2}, {1,DF5,2}, 
+  {1,B4,4},
 	//
-	{1,B1,1}, {1,A1,1}, {1,B1,4}, {1,B1,1}, {1,A1,1}, {1,B1,4}, {1, A1,1}, {1,B1,1}, 
-	{1,C,2}, {1,D2,2}, 
-	{1, A1, 2}, {1,B1,6},
+	{1,B4,1}, {1,A4,1}, {1,B4,4}, {1,B4,1}, {1,A4,1}, {1,B4,4}, {1, A4,1}, {1,B4,1}, 
+	{1,DF5,2}, {1,D5,2}, 
+	{1, A4, 2}, {1,B4,6},
 	//
-	{1,D1,6}, {1,C,6},
-	{1,B,12},
+	{1,D4,6}, {1,DF4,6},
+	{1,B3,12},
 	//
-	{1,A,12}, {1,A,12},
-	{1,D1,12},
+	{1,A3,24},
+	{1,D4,12},
 	//
-	{1,E1,12}, {1,F,6},
+	{1,E4,12}, {1,GF4,6},
 	//
-	{1,C,6}, {1,D,12}, {1,E1,6},
+	{1,DF4,6}, {1,D4,12}, {1,E4,6},
 	//
-	{1,F1,6}, {1,G1,12}, {1,A1,12},
+	{1,GF4,6}, {1,G4,12}, {1,A4,12},
 	//
-	{1,B1,2}, {1,B1,2}, {1,B1,2}, {1,B1,2},{1,B1,2}, {1,B1,2}, {1,B1,2}, {1,B1,2}, {1,B1,2}, {1,B1,2}, {1,B1,2},
+	{1,B4,2}, {1,B4,2}, {1,B4,2}, {1,B4,2},{1,B4,2}, {1,B4,2}, {1,B4,2}, {1,B4,2}, {1,B4,2}, {1,B4,2}, {1,B4,2},
 	// this line I started to include every octave
-	{1,C1,1}, {1,D2,1},
-	{1,B1,2}, {1,B1,2}, {1,B1,2}, {1,B1,2},{1,B1,2}, {1,B1,2}, {1,B1,2}, {1,B1,2}, {1,B1,2}, {1,B1,2},
-	{1,C1,1},	{1,D2,1},
+	{1,DF4,1}, {1,D4,1},
+	{1,B4,2}, {1,B4,2}, {1,B4,2}, {1,B4,2},{1,B4,2}, {1,B4,2}, {1,B4,2}, {1,B4,2}, {1,B4,2}, {1,B4,2}, 
+	{1,DF4,1}, {1,D4,1},
 	//
-	{1,B1,2}, {1,B1,2}, {1,B1,2}, {1,B1,2},{1,B1,2}, {1,B1,2}, {1,B1,2}, {1,B1,2}, {1,B1,2}, {1,B1,2},
-	{1,C1,1}, {1,D2,1},
-	{1,B1,2},
+	{1,B4,2}, {1,B4,2}, {1,B4,2}, {1,B4,2},{1,B4,2}, {1,B4,2}, {1,B4,2}, {1,B4,2}, {1,B4,2}, {1,B4,2}, 
+	{1,DF4,1}, {1,D4,1},
+	{1,B4,2},
 	//
-	{1,B1,2}, {1,B1,2}, {1,B1,2}, {1,B1,2}, {1,B1,10},
-	{1,B,2},
-	{1,C,2}, {1,D1,8},
+	{1,B4,2}, {1,B4,2}, {1,B4,2}, {1,B4,2}, {1,B4,10},
+	{1,B3,2},
+	{1,DF4,2}, {1,D4,8},
 	//
-	{1,D1,2}, {1,E1,2}, {1,F1,8}, {1,F1,2}, {1,A1,2}, {1,E1,8},
+	{1,D4,2}, {1,E4,2}, {1,GF4,8}, {1,GF4,2}, {1,A4,2}, {1,E4,8},
 	//
-	{1,D1,2}, {1,C,2},
-	{1,B,12},
-	{1,C,2}, {1,D1,8},
+	{1,D4,2}, {1,DF4,2},
+	{1,B4,12},
+	{1,DF4,2}, {1,D4,8},
 	//
-	{1,D1,2}, {1,E1,2}, {1,F1,8}, {1,F1,2}, {1,A1,2}, {1,B1,8}, {1,A1,2},
+	{1,D4,2}, {1,E4,2}, {1,GF4,8}, {1,GF4,2}, {1,A4,2}, {1,B4,8}, {1,A4,2},
 	//
-	{1,C1,2},
-	{1,B1,10},
-	{1,C1,2}, {1,D2,4}, {1,C1,4}, {1,B1,4},
+	{1,DF5,2},
+	{1,B4,10},
+	{1,DF5,2}, {1,D5,4}, {1,DF5,4}, {1,B4,4},
 	//
-	{1,A1,4}, {1,G1,4}, {1,F1,4}, {1,E1,8}, {1,D1,2}, {1,F1,2}, {1,E1,8},
+	{1,A4,4}, {1,G4,4}, {1,GF4,4}, {1,E4,8}, {1,D4,2}, {1,GF4,2}, {1,E4,8},
 	//
-	{1,D2,1}, {1,C,3}, {1,D2,4}, {1,D2,1}, {1,C,1}, {1,D2,4}, {1,C,1}, {1,D2,1}, {1,E2,2}, {1,D2,2},
+	{1,D5,1}, {1,DF5,3}, {1,D5,4}, {1,D5,1}, {1,DF5,1}, {1,D5,4}, {1,DF5,1}, {1,D5,1}, {1,E5,2}, {1,D5,2},
 	//
-	{1,C,2},
-	{1,B1,4}, {1,B1,1}, {1,A1,1}, {1,B1,4}, {1,B1,1}, {1,A1,1}, {1,B1,4}, {1,A1,1}, {1,B1,1},
-	{1,C,2}, {1,D2,2},
-	{1,A,2},
+	{1,DF5,2},
+	{1,B4,4}, {1,B4,1}, {1,A4,1}, {1,B4,4}, {1,B4,1}, {1,A4,1}, {1,B4,4}, {1,A4,1}, {1,B4,1},
+	{1,DF5,2}, {1,D5,2},
+	{1,A4,2},
 	//
 	//5|------d-d-d-d.....
 	//4|b------------.....
 	
 };
 
-
-
-static uint8_t isPlay = 1;
-static uint8_t isDacOut = 1;
+static uint16_t sustain = 0x0FFF;
+static uint8_t isPlay = 0;
+static uint8_t isDacOut = 0;
 static uint8_t waveIndex = 0;
-static uint8_t instrumentVec = 0x1F;
+static uint8_t instrumentVec = 0x01;
+static uint8_t envIndex = 0;
+static uint16_t envCnt = 0;
+static uint8_t tempMul = 1;
 
 const uint16_t Flute[64] = {  
 	  1007,1252,1374,1548,1698,1797,1825,1797,1675,1562,1383,
@@ -250,6 +215,26 @@ const uint16_t Guitar[64] = {
  859, 851, 849, 875, 922, 977, 1024, 1024, 1024
 };
 
+const uint16_t envalope[16] = {
+1,
+1,
+2,
+4,
+7,
+12,
+20,
+33,
+54,
+90,
+148,
+244,
+403,
+665,
+1096,
+1808
+};
+
+
 
 
 void initSound(void) {
@@ -281,7 +266,7 @@ void initSound(void) {
   // **** timer0A initialization ****
                                    // configure for periodic mode
   TIMER2_TAMR_R = TIMER_TAMR_TAMR_PERIOD;
-  TIMER2_TAILR_R = 8000;         // start value for 10kHz interrupts
+  TIMER2_TAILR_R = C4;         // start value for 10kHz interrupts
   TIMER2_IMR_R |= TIMER_IMR_TATOIM;// enable timeout (rollover) interrupt
   TIMER2_ICR_R = TIMER_ICR_TATOCINT;// clear timer2A timeout flag
   TIMER2_CTL_R |= TIMER_CTL_TAEN;  // enable timer2A 32-b, periodic, interrupts
@@ -297,34 +282,22 @@ void initSound(void) {
 
 void togglePlay(void) {
 	isPlay = !isPlay;
+	isDacOut = isPlay;
 }
 
 void rewind(void) {
 	currentNote = songLeft;
 }
 
-#define PF1       (*((volatile uint32_t *)0x40025008))
-#define PF2       (*((volatile uint32_t *)0x40025010))
-#define PF3       (*((volatile uint32_t *)0x40025020))
-#define LEDS      (*((volatile uint32_t *)0x40025038))
-#define RED       0x02
-#define BLUE      0x04
-#define GREEN     0x08
-#define WHEELSIZE 8           // must be an integer power of 2
-                              //    red, yellow,    green, light blue, blue, purple,   white,          dark
-const long COLORWHEEL[WHEELSIZE] = {RED, RED+GREEN, GREEN, GREEN+BLUE, BLUE, BLUE+RED, RED+GREEN+BLUE, 0};
-
-void UserTask(void){
-  static int i = 0;
-  LEDS = COLORWHEEL[i&(WHEELSIZE-1)];
-  i = i + 1;
-}
-
 void songWorker(void) {
 	//UserTask();
 	if(!isPlay) {
+		isDacOut=0;
 		return;
 	}
+	envIndex = 0;
+	envCnt = 0;
+	sustain = 0x3FF;
 	if(currentNote->freq == 0) {
 		isDacOut = 0;
 	} else {
@@ -332,19 +305,46 @@ void songWorker(void) {
 		TIMER2_TAILR_R = currentNote->freq;
 	}
 	
-	TIMER3_TAILR_R = 80000000/((BPM * currentNote->dur)) * 60;
+	TIMER3_TAILR_R = 80000000/((BPM)) * currentNote->dur * 30 / tempMul;
 	
 	currentNote++;
+	//outData(0);
+}
+
+void instUpd(void){
+	instrumentVec++;
+	if(instrumentVec > 0x1F) {
+		instrumentVec = 0x01;
+	}
+}
+
+void toggleTempo(void){
+	if(tempMul == 2){
+		tempMul = 1;
+	} else {
+		tempMul = 2;
+	}
 }
 
 void soundWorker(void) {
-	UserTask();
+	//UserTask();
 	uint16_t res = Flute[waveIndex] * (instrumentVec & 0x01) + \
 								 Horn[waveIndex] * (instrumentVec >> 1 & 0x01) + \
 								 Wave[waveIndex] * (instrumentVec >> 2 & 0x01) + \
 								 Trumpet[waveIndex] * (instrumentVec >> 3 & 0x01) + \
 								 Guitar[waveIndex] * (instrumentVec >> 4 & 0x01);
-	outData(res);
+	if(isDacOut){
+		outData(res/envalope[envIndex]);
+	} else {
+		outData(0);
+		return;
+	}
+	if(envCnt > sustain){
+		envIndex++;
+		envCnt = 0;
+	} else {
+		envCnt++;
+	}
 	waveIndex = (waveIndex+1)%64;
 }
 
